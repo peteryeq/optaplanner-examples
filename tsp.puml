@@ -1,0 +1,73 @@
+@startuml
+abstract class org.optaplanner.examples.tsp.domain.location.Location {
+# String name
+# double latitude
+# double longitude
++ String getName()
++ void setName(String)
++ double getLatitude()
++ void setLatitude(double)
++ double getLongitude()
++ void setLongitude(double)
++ {abstract}long getDistanceTo(Location)
++ double getAirDistanceDoubleTo(Location)
++ double getAngle(Location)
++ String toString()
+}
+class org.optaplanner.examples.tsp.domain.TspSolution {
+- String name
+# DistanceType distanceType
+# String distanceUnitOfMeasurement
+- List<Location> locationList
+- Domicile domicile
+- List<Visit> visitList
+- SimpleLongScore score
++ String getName()
++ void setName(String)
++ DistanceType getDistanceType()
++ void setDistanceType(DistanceType)
++ String getDistanceUnitOfMeasurement()
++ void setDistanceUnitOfMeasurement(String)
++ List<Location> getLocationList()
++ void setLocationList(List<Location>)
++ Domicile getDomicile()
++ void setDomicile(Domicile)
++ List<Visit> getVisitList()
++ void setVisitList(List<Visit>)
++ SimpleLongScore getScore()
++ void setScore(SimpleLongScore)
++ List<Domicile> getDomicileRange()
++ String getDistanceString(NumberFormat)
+}
+class org.optaplanner.examples.tsp.domain.Domicile {
+- Location location
++ Location getLocation()
++ void setLocation(Location)
++ long getDistanceTo(Standstill)
++ String toString()
+}
+interface org.optaplanner.examples.tsp.domain.Standstill {
+~ Location getLocation()
+~ long getDistanceTo(Standstill)
+}
+class org.optaplanner.examples.tsp.domain.Visit {
+- Location location
+- Standstill previousStandstill
++ Location getLocation()
++ void setLocation(Location)
++ Standstill getPreviousStandstill()
++ void setPreviousStandstill(Standstill)
++ long getDistanceFromPreviousStandstill()
++ long getDistanceFrom(Standstill)
++ long getDistanceTo(Standstill)
++ String toString()
+}
+
+
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.location.Location
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.TspSolution
+org.optaplanner.examples.tsp.domain.Standstill <|.. org.optaplanner.examples.tsp.domain.Domicile
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.Domicile
+org.optaplanner.examples.tsp.domain.Standstill <|.. org.optaplanner.examples.tsp.domain.Visit
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.Visit
+@enduml

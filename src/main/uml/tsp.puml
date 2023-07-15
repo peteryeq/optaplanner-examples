@@ -1,0 +1,143 @@
+@startuml
+class org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory {
++ DomicileAngleVisitDifficultyWeight createSorterWeight(TspSolution,Visit)
+}
+class org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory$DomicileAngleVisitDifficultyWeight {
+- {static} Comparator<DomicileAngleVisitDifficultyWeight> COMPARATOR
+- Visit visit
+- double domicileAngle
+- long domicileRoundTripDistance
++ int compareTo(DomicileAngleVisitDifficultyWeight)
+}
+class org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator {
+- {static} Comparator<Visit> COMPARATOR
++ int compare(Visit,Visit)
+}
+abstract class org.optaplanner.examples.tsp.domain.location.Location {
+# String name
+# double latitude
+# double longitude
++ String getName()
++ void setName(String)
++ double getLatitude()
++ void setLatitude(double)
++ double getLongitude()
++ void setLongitude(double)
++ {abstract}long getDistanceTo(Location)
++ double getAirDistanceDoubleTo(Location)
++ double getAngle(Location)
++ String toString()
+}
+class org.optaplanner.examples.tsp.domain.TspSolution {
+- String name
+# DistanceType distanceType
+# String distanceUnitOfMeasurement
+- List<Location> locationList
+- Domicile domicile
+- List<Visit> visitList
+- SimpleLongScore score
++ String getName()
++ void setName(String)
++ DistanceType getDistanceType()
++ void setDistanceType(DistanceType)
++ String getDistanceUnitOfMeasurement()
++ void setDistanceUnitOfMeasurement(String)
++ List<Location> getLocationList()
++ void setLocationList(List<Location>)
++ Domicile getDomicile()
++ void setDomicile(Domicile)
++ List<Visit> getVisitList()
++ void setVisitList(List<Visit>)
++ SimpleLongScore getScore()
++ void setScore(SimpleLongScore)
++ List<Domicile> getDomicileRange()
++ String getDistanceString(NumberFormat)
+}
+class org.optaplanner.examples.tsp.domain.solver.LongitudeVisitDifficultyComparator {
+- {static} Comparator<Visit> COMPARATOR
++ int compare(Visit,Visit)
+}
+interface org.optaplanner.examples.tsp.domain.Standstill {
+~ Location getLocation()
+~ long getDistanceTo(Standstill)
+}
+class org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory {
++ DomicileDistanceVisitDifficultyWeight createSorterWeight(TspSolution,Visit)
+}
+class org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory$DomicileDistanceVisitDifficultyWeight {
+- {static} Comparator<DomicileDistanceVisitDifficultyWeight> COMPARATOR
+- Visit visit
+- long domicileRoundTripDistance
++ int compareTo(DomicileDistanceVisitDifficultyWeight)
+}
+class org.optaplanner.examples.tsp.domain.Visit {
+- Location location
+- Standstill previousStandstill
++ Location getLocation()
++ void setLocation(Location)
++ Standstill getPreviousStandstill()
++ void setPreviousStandstill(Standstill)
++ long getDistanceFromPreviousStandstill()
++ long getDistanceFrom(Standstill)
++ long getDistanceTo(Standstill)
++ String toString()
+}
+class org.optaplanner.examples.tsp.domain.location.RoadLocation {
+# Map<RoadLocation,Double> travelDistanceMap
++ Map<RoadLocation,Double> getTravelDistanceMap()
++ void setTravelDistanceMap(Map<RoadLocation,Double>)
++ long getDistanceTo(Location)
+}
+enum org.optaplanner.examples.tsp.domain.location.DistanceType {
++  AIR_DISTANCE
++  ROAD_DISTANCE
+}
+class org.optaplanner.examples.tsp.domain.location.AirLocation {
++ long getDistanceTo(Location)
+}
+class org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory {
++ DomicileDistanceStandstillStrengthWeight createSorterWeight(TspSolution,Standstill)
+}
+class org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory$DomicileDistanceStandstillStrengthWeight {
+- {static} Comparator<DomicileDistanceStandstillStrengthWeight> COMPARATOR
+- Standstill standstill
+- long domicileRoundTripDistance
++ int compareTo(DomicileDistanceStandstillStrengthWeight)
+}
+class org.optaplanner.examples.tsp.domain.Domicile {
+- Location location
++ Location getLocation()
++ void setLocation(Location)
++ long getDistanceTo(Standstill)
++ String toString()
+}
+class org.optaplanner.examples.tsp.domain.location.RoadLocationKeyDeserializer {
+# RoadLocation createInstance(long)
+}
+class org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter {
++ double getNearbyDistance(Visit,Standstill)
+}
+
+
+org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory <|.. org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory
+org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory +.. org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory$DomicileAngleVisitDifficultyWeight
+org.optaplanner.examples.tsp.domain.solver.Comparable <|.. org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory$DomicileAngleVisitDifficultyWeight
+java.util.Comparator <|.. org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.location.Location
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.TspSolution
+java.util.Comparator <|.. org.optaplanner.examples.tsp.domain.solver.LongitudeVisitDifficultyComparator
+org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory <|.. org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory
+org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory +.. org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory$DomicileDistanceVisitDifficultyWeight
+org.optaplanner.examples.tsp.domain.solver.Comparable <|.. org.optaplanner.examples.tsp.domain.solver.DomicileDistanceVisitDifficultyWeightFactory$DomicileDistanceVisitDifficultyWeight
+org.optaplanner.examples.tsp.domain.Standstill <|.. org.optaplanner.examples.tsp.domain.Visit
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.Visit
+org.optaplanner.examples.tsp.domain.location.Location <|-- org.optaplanner.examples.tsp.domain.location.RoadLocation
+org.optaplanner.examples.tsp.domain.location.Location <|-- org.optaplanner.examples.tsp.domain.location.AirLocation
+org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory <|.. org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory
+org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory +.. org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory$DomicileDistanceStandstillStrengthWeight
+org.optaplanner.examples.tsp.domain.solver.Comparable <|.. org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory$DomicileDistanceStandstillStrengthWeight
+org.optaplanner.examples.tsp.domain.Standstill <|.. org.optaplanner.examples.tsp.domain.Domicile
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.tsp.domain.Domicile
+org.optaplanner.examples.common.persistence.jackson.AbstractKeyDeserializer <|-- org.optaplanner.examples.tsp.domain.location.RoadLocationKeyDeserializer
+org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter <|.. org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter
+@enduml

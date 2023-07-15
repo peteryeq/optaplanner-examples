@@ -1,0 +1,334 @@
+@startuml
+class org.optaplanner.examples.meetingscheduling.domain.Meeting {
+- String topic
+- List<Person> speakerList
+- String content
+- boolean entireGroupMeeting
+- int durationInGrains
+- List<RequiredAttendance> requiredAttendanceList
+- List<PreferredAttendance> preferredAttendanceList
++ String getTopic()
++ void setTopic(String)
++ List<Person> getSpeakerList()
++ void setSpeakerList(List<Person>)
++ String getContent()
++ void setContent(String)
++ boolean isEntireGroupMeeting()
++ void setEntireGroupMeeting(boolean)
++ int getDurationInGrains()
++ void setDurationInGrains(int)
++ List<RequiredAttendance> getRequiredAttendanceList()
++ void setRequiredAttendanceList(List<RequiredAttendance>)
++ List<PreferredAttendance> getPreferredAttendanceList()
++ void setPreferredAttendanceList(List<PreferredAttendance>)
++ int getRequiredCapacity()
++ String getDurationString()
++ String getLabel()
++ String toString()
+}
+class org.optaplanner.examples.meetingscheduling.score.MeetingSchedulingConstraintProvider {
++ Constraint[] defineConstraints(ConstraintFactory)
+# Constraint roomConflict(ConstraintFactory)
+# Constraint avoidOvertime(ConstraintFactory)
+# Constraint requiredAttendanceConflict(ConstraintFactory)
+# Constraint requiredRoomCapacity(ConstraintFactory)
+# Constraint startAndEndOnSameDay(ConstraintFactory)
+# Constraint requiredAndPreferredAttendanceConflict(ConstraintFactory)
+# Constraint preferredAttendanceConflict(ConstraintFactory)
+# Constraint doMeetingsAsSoonAsPossible(ConstraintFactory)
+# Constraint oneBreakBetweenConsecutiveMeetings(ConstraintFactory)
+# Constraint overlappingMeetings(ConstraintFactory)
+# Constraint assignLargerRoomsFirst(ConstraintFactory)
+# Constraint roomStability(ConstraintFactory)
+}
+class org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment {
+- Meeting meeting
+- boolean pinned
+- TimeGrain startingTimeGrain
+- Room room
++ Meeting getMeeting()
++ void setMeeting(Meeting)
++ boolean isPinned()
++ void setPinned(boolean)
++ TimeGrain getStartingTimeGrain()
++ void setStartingTimeGrain(TimeGrain)
++ Room getRoom()
++ void setRoom(Room)
++ int calculateOverlap(MeetingAssignment)
++ Integer getLastTimeGrainIndex()
++ String getStartingDateTimeString()
++ int getRoomCapacity()
++ int getRequiredCapacity()
++ String getLabel()
++ String toString()
+}
+class org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp {
++ {static} String SOLVER_CONFIG
++ {static} String DATA_DIR_NAME
++ {static} void main(String[])
+# MeetingSchedulingPanel createSolutionPanel()
++ SolutionFileIO<MeetingSchedule> createSolutionFileIO()
+}
+class org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO {
++ MeetingSchedule read(File)
++ void write(MeetingSchedule,File)
+}
+class org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO$MeetingSchedulingXlsxReader {
++ MeetingSchedule read()
+- void readConfiguration()
+- void readPersonList()
+- void readMeetingList()
+- void readSpeakerList(Map<String,Person>,Meeting,List<Attendance>,Set<Person>,AtomicLong)
+- E createAttendance(AtomicLong,LongFunction<E>)
+- void readMeetingDuration(Meeting)
+- List<Attendance> getAttendanceLists(Meeting,Map<String,Person>,Set<Person>,AtomicLong)
+- List<RequiredAttendance> getRequiredAttendanceList(Meeting,Map<String,Person>,Set<Person>,Set<Person>,AtomicLong)
+- List<PreferredAttendance> getPreferredAttendanceList(Meeting,Map<String,Person>,Set<Person>,Set<Person>,AtomicLong)
+- TimeGrain extractTimeGrain(Meeting,Map<LocalDateTime,TimeGrain>)
+- Room extractRoom(Meeting,Map<String,Room>)
+- void readDayList()
+- void readRoomList()
+}
+class org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO$MeetingSchedulingXlsxWriter {
++ Workbook write()
+- void writeConfiguration()
+- void writePersons()
+- void writeMeetings()
+- void writeDays()
+- void writeRooms()
+- void writeRoomsView()
+- void writePersonsView()
+- void writePersonMeetingList(Person,boolean)
+- void writePrintedFormView()
+- void writeMeetingAssignmentListVertically(List<MeetingAssignment>)
+- String getTimeString(int)
+- void writeMeetingAssignmentList(List<MeetingAssignment>)
+- int getLongestDurationInGrains(List<MeetingAssignment>)
+- void writeTimeGrainDaysHeaders()
+- void writeTimeGrainHoursHeaders()
+- void writeTimeGrainsHoursVertically(int)
+~ void nextMeetingAssignmentListCell(List<MeetingAssignment>,Function<MeetingAssignment,String>,List<String>)
+- String getMeetingAssignmentListString(List<MeetingAssignment>)
+- XSSFCell getXSSFCellOfScore(HardMediumSoftScore)
+}
+class org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingGenerator {
+- StringDataGenerator topicGenerator
+- int[] durationInGrainsOptions
+- int[] personsPerMeetingOptions
+- int[] startingMinuteOfDayOptions
+- StringDataGenerator fullNameGenerator
+# SolutionFileIO<MeetingSchedule> solutionFileIO
+# File outputDir
+# Random random
++ {static} void main(String[])
+- void writeMeetingSchedule(int,int)
+- String determineFileName(int,int,int)
++ MeetingSchedule createMeetingSchedule(String,int,int,int)
+- void createMeetingListAndAttendanceList(MeetingSchedule,int)
+- void createTimeGrainList(MeetingSchedule,int)
+- void createRoomList(MeetingSchedule,int)
+- void createPersonList(MeetingSchedule)
+- void linkAttendanceListToPersons(MeetingSchedule)
+- void createMeetingAssignmentList(MeetingSchedule)
+}
+class org.optaplanner.examples.meetingscheduling.domain.Day {
+- int dayOfYear
+- {static} DateTimeFormatter DAY_FORMATTER
++ int getDayOfYear()
++ void setDayOfYear(int)
++ String getDateString()
++ LocalDate toDate()
++ String getLabel()
++ String toString()
++ boolean equals(Object)
++ int hashCode()
++ int compareTo(Day)
+}
+class org.optaplanner.examples.meetingscheduling.domain.Person {
+- String fullName
++ String getFullName()
++ void setFullName(String)
++ String getLabel()
++ String toString()
+}
+class org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule {
+- MeetingConstraintConfiguration constraintConfiguration
+- List<Meeting> meetingList
+- List<Day> dayList
+- List<TimeGrain> timeGrainList
+- List<Room> roomList
+- List<Person> personList
+- List<Attendance> attendanceList
+- List<MeetingAssignment> meetingAssignmentList
+- HardMediumSoftScore score
++ MeetingConstraintConfiguration getConstraintConfiguration()
++ void setConstraintConfiguration(MeetingConstraintConfiguration)
++ List<Meeting> getMeetingList()
++ void setMeetingList(List<Meeting>)
++ List<Day> getDayList()
++ void setDayList(List<Day>)
++ List<TimeGrain> getTimeGrainList()
++ void setTimeGrainList(List<TimeGrain>)
++ List<Room> getRoomList()
++ void setRoomList(List<Room>)
++ List<Person> getPersonList()
++ void setPersonList(List<Person>)
++ List<Attendance> getAttendanceList()
++ void setAttendanceList(List<Attendance>)
++ List<MeetingAssignment> getMeetingAssignmentList()
++ void setMeetingAssignmentList(List<MeetingAssignment>)
++ HardMediumSoftScore getScore()
++ void setScore(HardMediumSoftScore)
+}
+class org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration {
++ {static} String ROOM_CONFLICT
++ {static} String DONT_GO_IN_OVERTIME
++ {static} String REQUIRED_ATTENDANCE_CONFLICT
++ {static} String REQUIRED_ROOM_CAPACITY
++ {static} String START_AND_END_ON_SAME_DAY
++ {static} String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT
++ {static} String PREFERRED_ATTENDANCE_CONFLICT
++ {static} String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE
++ {static} String ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS
++ {static} String OVERLAPPING_MEETINGS
++ {static} String ASSIGN_LARGER_ROOMS_FIRST
++ {static} String ROOM_STABILITY
+- HardMediumSoftScore roomConflict
+- HardMediumSoftScore dontGoInOvertime
+- HardMediumSoftScore requiredAttendanceConflict
+- HardMediumSoftScore requiredRoomCapacity
+- HardMediumSoftScore startAndEndOnSameDay
+- HardMediumSoftScore requiredAndPreferredAttendanceConflict
+- HardMediumSoftScore preferredAttendanceConflict
+- HardMediumSoftScore doAllMeetingsAsSoonAsPossible
+- HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings
+- HardMediumSoftScore overlappingMeetings
+- HardMediumSoftScore assignLargerRoomsFirst
+- HardMediumSoftScore roomStability
++ HardMediumSoftScore getRoomConflict()
++ void setRoomConflict(HardMediumSoftScore)
++ HardMediumSoftScore getDontGoInOvertime()
++ void setDontGoInOvertime(HardMediumSoftScore)
++ HardMediumSoftScore getRequiredAttendanceConflict()
++ void setRequiredAttendanceConflict(HardMediumSoftScore)
++ HardMediumSoftScore getRequiredRoomCapacity()
++ void setRequiredRoomCapacity(HardMediumSoftScore)
++ HardMediumSoftScore getStartAndEndOnSameDay()
++ void setStartAndEndOnSameDay(HardMediumSoftScore)
++ HardMediumSoftScore getRequiredAndPreferredAttendanceConflict()
++ void setRequiredAndPreferredAttendanceConflict(HardMediumSoftScore)
++ HardMediumSoftScore getPreferredAttendanceConflict()
++ void setPreferredAttendanceConflict(HardMediumSoftScore)
++ HardMediumSoftScore getDoAllMeetingsAsSoonAsPossible()
++ void setDoAllMeetingsAsSoonAsPossible(HardMediumSoftScore)
++ HardMediumSoftScore getOneTimeGrainBreakBetweenTwoConsecutiveMeetings()
++ void setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore)
++ HardMediumSoftScore getOverlappingMeetings()
++ void setOverlappingMeetings(HardMediumSoftScore)
++ HardMediumSoftScore getAssignLargerRoomsFirst()
++ void setAssignLargerRoomsFirst(HardMediumSoftScore)
++ HardMediumSoftScore getRoomStability()
++ void setRoomStability(HardMediumSoftScore)
+}
+class org.optaplanner.examples.meetingscheduling.domain.Room {
+- String name
+- int capacity
++ String getName()
++ void setName(String)
++ int getCapacity()
++ void setCapacity(int)
++ String getLabel()
++ String toString()
+}
+class org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel {
++ {static} String LOGO_PATH
+- TimeTablePanel<TimeGrain,Room> roomsPanel
+- TimeTablePanel<TimeGrain,Pair<Person,Boolean>> personsPanel
+- OvertimeTimeGrain OVERTIME_TIME_GRAIN
++ boolean isWrapInScrollPane()
++ void resetPanel(MeetingSchedule)
+- void defineGrid(MeetingSchedule)
+- void fillCells(MeetingSchedule)
+- void fillRoomCells(MeetingSchedule)
+- void fillPersonCells(MeetingSchedule)
+- void fillTimeGrainCells(MeetingSchedule)
+- void fillMeetingAssignmentCells(MeetingSchedule)
+- JPanel createTableHeader(JLabel)
+- JButton createButton(MeetingAssignment,Color)
+}
+class org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel$MeetingAssignmentAction {
+- MeetingAssignment meetingAssignment
++ void actionPerformed(ActionEvent)
+}
+class org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel$OvertimeTimeGrain {
++ String getDateTimeString()
+}
+class org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance {
+}
+class org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance {
+}
+abstract class org.optaplanner.examples.meetingscheduling.domain.Attendance {
+- Person person
+- Meeting meeting
++ Person getPerson()
++ void setPerson(Person)
++ Meeting getMeeting()
++ void setMeeting(Meeting)
++ String toString()
+}
+class org.optaplanner.examples.meetingscheduling.domain.TimeGrain {
+- {static} Comparator<TimeGrain> COMPARATOR
++ {static} int GRAIN_LENGTH_IN_MINUTES
+- int grainIndex
+- Day day
+- int startingMinuteOfDay
++ int getGrainIndex()
++ void setGrainIndex(int)
++ Day getDay()
++ void setDay(Day)
++ int getStartingMinuteOfDay()
++ void setStartingMinuteOfDay(int)
++ LocalDate getDate()
++ LocalTime getTime()
++ LocalDateTime getDateTime()
++ String getTimeString()
++ String getDateTimeString()
++ String getLabel()
++ String toString()
++ boolean equals(Object)
++ int hashCode()
++ int compareTo(TimeGrain)
+}
+
+
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Meeting
+org.optaplanner.core.api.score.stream.ConstraintProvider <|.. org.optaplanner.examples.meetingscheduling.score.MeetingSchedulingConstraintProvider
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment
+org.optaplanner.examples.common.app.CommonApp <|-- org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp
+org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO <|-- org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO
+org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO +.. org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO$MeetingSchedulingXlsxReader
+org.optaplanner.examples.meetingscheduling.persistence.AbstractXlsxReader <|-- org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO$MeetingSchedulingXlsxReader
+org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO +.. org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO$MeetingSchedulingXlsxWriter
+org.optaplanner.examples.meetingscheduling.persistence.AbstractXlsxWriter <|-- org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO$MeetingSchedulingXlsxWriter
+org.optaplanner.examples.common.app.LoggingMain <|-- org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingGenerator
+org.optaplanner.examples.meetingscheduling.domain.Comparable <|.. org.optaplanner.examples.meetingscheduling.domain.Day
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.Day
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Day
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.Person
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Person
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.Room
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Room
+org.optaplanner.examples.common.swingui.SolutionPanel <|-- org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel
+org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel +.. org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel$MeetingAssignmentAction
+org.optaplanner.examples.meetingscheduling.swingui.AbstractAction <|-- org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel$MeetingAssignmentAction
+org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel +.. org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel$OvertimeTimeGrain
+org.optaplanner.examples.meetingscheduling.swingui.TimeGrain <|-- org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel$OvertimeTimeGrain
+org.optaplanner.examples.meetingscheduling.domain.Attendance <|-- org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance
+org.optaplanner.examples.meetingscheduling.domain.Attendance <|-- org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Attendance
+org.optaplanner.examples.meetingscheduling.domain.Comparable <|.. org.optaplanner.examples.meetingscheduling.domain.TimeGrain
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.TimeGrain
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.TimeGrain
+@enduml

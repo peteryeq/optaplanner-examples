@@ -1,0 +1,99 @@
+@startuml
+class Meeting {
+- String topic
+- List<Person> speakerList
+- String content
+- boolean entireGroupMeeting
+- int durationInGrains
+- List<RequiredAttendance> requiredAttendanceList
+- List<PreferredAttendance> preferredAttendanceList
+}
+class MeetingConstraintConfiguration {
++ {static} String ROOM_CONFLICT
++ {static} String DONT_GO_IN_OVERTIME
++ {static} String REQUIRED_ATTENDANCE_CONFLICT
++ {static} String REQUIRED_ROOM_CAPACITY
++ {static} String START_AND_END_ON_SAME_DAY
++ {static} String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT
++ {static} String PREFERRED_ATTENDANCE_CONFLICT
++ {static} String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE
++ {static} String ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS
++ {static} String OVERLAPPING_MEETINGS
++ {static} String ASSIGN_LARGER_ROOMS_FIRST
++ {static} String ROOM_STABILITY
+- HardMediumSoftScore roomConflict
+- HardMediumSoftScore dontGoInOvertime
+- HardMediumSoftScore requiredAttendanceConflict
+- HardMediumSoftScore requiredRoomCapacity
+- HardMediumSoftScore startAndEndOnSameDay
+- HardMediumSoftScore requiredAndPreferredAttendanceConflict
+- HardMediumSoftScore preferredAttendanceConflict
+- HardMediumSoftScore doAllMeetingsAsSoonAsPossible
+- HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings
+- HardMediumSoftScore overlappingMeetings
+- HardMediumSoftScore assignLargerRoomsFirst
+- HardMediumSoftScore roomStability
+}
+class MeetingAssignment {
+- Meeting meeting
+- boolean pinned
+- TimeGrain startingTimeGrain
+- Room room
+}
+class Room {
+- String name
+- int capacity
+}
+class Day {
+- int dayOfYear
+- {static} DateTimeFormatter DAY_FORMATTER
+}
+class PreferredAttendance {
+}
+class Person {
+- String fullName
+}
+class RequiredAttendance {
+}
+abstract class Attendance {
+- Person person
+- Meeting meeting
+}
+class TimeGrain {
+- {static} Comparator<TimeGrain> COMPARATOR
++ {static} int GRAIN_LENGTH_IN_MINUTES
+- int grainIndex
+- Day day
+- int startingMinuteOfDay
+}
+class MeetingSchedule {
+- MeetingConstraintConfiguration constraintConfiguration
+- List<Meeting> meetingList
+- List<Day> dayList
+- List<TimeGrain> timeGrainList
+- List<Room> roomList
+- List<Person> personList
+- List<Attendance> attendanceList
+- List<MeetingAssignment> meetingAssignmentList
+- HardMediumSoftScore score
+}
+
+
+AbstractPersistable <|-- Meeting
+AbstractPersistable <|-- MeetingConstraintConfiguration
+AbstractPersistable <|-- MeetingAssignment
+Labeled <|.. Room
+AbstractPersistable <|-- Room
+Comparable <|.. Day
+Labeled <|.. Day
+AbstractPersistable <|-- Day
+Attendance <|-- PreferredAttendance
+Labeled <|.. Person
+AbstractPersistable <|-- Person
+Attendance <|-- RequiredAttendance
+AbstractPersistable <|-- Attendance
+Comparable <|.. TimeGrain
+Labeled <|.. TimeGrain
+AbstractPersistable <|-- TimeGrain
+AbstractPersistable <|-- MeetingSchedule
+@enduml

@@ -1,0 +1,99 @@
+@startuml
+class org.optaplanner.examples.meetingscheduling.domain.Meeting {
+- String topic
+- List<Person> speakerList
+- String content
+- boolean entireGroupMeeting
+- int durationInGrains
+- List<RequiredAttendance> requiredAttendanceList
+- List<PreferredAttendance> preferredAttendanceList
+}
+class org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration {
++ {static} String ROOM_CONFLICT
++ {static} String DONT_GO_IN_OVERTIME
++ {static} String REQUIRED_ATTENDANCE_CONFLICT
++ {static} String REQUIRED_ROOM_CAPACITY
++ {static} String START_AND_END_ON_SAME_DAY
++ {static} String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT
++ {static} String PREFERRED_ATTENDANCE_CONFLICT
++ {static} String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE
++ {static} String ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS
++ {static} String OVERLAPPING_MEETINGS
++ {static} String ASSIGN_LARGER_ROOMS_FIRST
++ {static} String ROOM_STABILITY
+- HardMediumSoftScore roomConflict
+- HardMediumSoftScore dontGoInOvertime
+- HardMediumSoftScore requiredAttendanceConflict
+- HardMediumSoftScore requiredRoomCapacity
+- HardMediumSoftScore startAndEndOnSameDay
+- HardMediumSoftScore requiredAndPreferredAttendanceConflict
+- HardMediumSoftScore preferredAttendanceConflict
+- HardMediumSoftScore doAllMeetingsAsSoonAsPossible
+- HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings
+- HardMediumSoftScore overlappingMeetings
+- HardMediumSoftScore assignLargerRoomsFirst
+- HardMediumSoftScore roomStability
+}
+class org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment {
+- Meeting meeting
+- boolean pinned
+- TimeGrain startingTimeGrain
+- Room room
+}
+class org.optaplanner.examples.meetingscheduling.domain.Room {
+- String name
+- int capacity
+}
+class org.optaplanner.examples.meetingscheduling.domain.Day {
+- int dayOfYear
+- {static} DateTimeFormatter DAY_FORMATTER
+}
+class org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance {
+}
+class org.optaplanner.examples.meetingscheduling.domain.Person {
+- String fullName
+}
+class org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance {
+}
+abstract class org.optaplanner.examples.meetingscheduling.domain.Attendance {
+- Person person
+- Meeting meeting
+}
+class org.optaplanner.examples.meetingscheduling.domain.TimeGrain {
+- {static} Comparator<TimeGrain> COMPARATOR
++ {static} int GRAIN_LENGTH_IN_MINUTES
+- int grainIndex
+- Day day
+- int startingMinuteOfDay
+}
+class org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule {
+- MeetingConstraintConfiguration constraintConfiguration
+- List<Meeting> meetingList
+- List<Day> dayList
+- List<TimeGrain> timeGrainList
+- List<Room> roomList
+- List<Person> personList
+- List<Attendance> attendanceList
+- List<MeetingAssignment> meetingAssignmentList
+- HardMediumSoftScore score
+}
+
+
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Meeting
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.Room
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Room
+org.optaplanner.examples.meetingscheduling.domain.Comparable <|.. org.optaplanner.examples.meetingscheduling.domain.Day
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.Day
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Day
+org.optaplanner.examples.meetingscheduling.domain.Attendance <|-- org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.Person
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Person
+org.optaplanner.examples.meetingscheduling.domain.Attendance <|-- org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.Attendance
+org.optaplanner.examples.meetingscheduling.domain.Comparable <|.. org.optaplanner.examples.meetingscheduling.domain.TimeGrain
+org.optaplanner.examples.common.swingui.components.Labeled <|.. org.optaplanner.examples.meetingscheduling.domain.TimeGrain
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.TimeGrain
+org.optaplanner.examples.common.domain.AbstractPersistable <|-- org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule
+@enduml

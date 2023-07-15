@@ -1,0 +1,214 @@
+@startuml
+class Meeting {
+- String topic
+- List<Person> speakerList
+- String content
+- boolean entireGroupMeeting
+- int durationInGrains
+- List<RequiredAttendance> requiredAttendanceList
+- List<PreferredAttendance> preferredAttendanceList
++ String getTopic()
++ void setTopic(String)
++ List<Person> getSpeakerList()
++ void setSpeakerList(List<Person>)
++ String getContent()
++ void setContent(String)
++ boolean isEntireGroupMeeting()
++ void setEntireGroupMeeting(boolean)
++ int getDurationInGrains()
++ void setDurationInGrains(int)
++ List<RequiredAttendance> getRequiredAttendanceList()
++ void setRequiredAttendanceList(List<RequiredAttendance>)
++ List<PreferredAttendance> getPreferredAttendanceList()
++ void setPreferredAttendanceList(List<PreferredAttendance>)
++ int getRequiredCapacity()
++ String getDurationString()
++ String getLabel()
++ String toString()
+}
+class MeetingConstraintConfiguration {
++ {static} String ROOM_CONFLICT
++ {static} String DONT_GO_IN_OVERTIME
++ {static} String REQUIRED_ATTENDANCE_CONFLICT
++ {static} String REQUIRED_ROOM_CAPACITY
++ {static} String START_AND_END_ON_SAME_DAY
++ {static} String REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT
++ {static} String PREFERRED_ATTENDANCE_CONFLICT
++ {static} String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE
++ {static} String ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS
++ {static} String OVERLAPPING_MEETINGS
++ {static} String ASSIGN_LARGER_ROOMS_FIRST
++ {static} String ROOM_STABILITY
+- HardMediumSoftScore roomConflict
+- HardMediumSoftScore dontGoInOvertime
+- HardMediumSoftScore requiredAttendanceConflict
+- HardMediumSoftScore requiredRoomCapacity
+- HardMediumSoftScore startAndEndOnSameDay
+- HardMediumSoftScore requiredAndPreferredAttendanceConflict
+- HardMediumSoftScore preferredAttendanceConflict
+- HardMediumSoftScore doAllMeetingsAsSoonAsPossible
+- HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings
+- HardMediumSoftScore overlappingMeetings
+- HardMediumSoftScore assignLargerRoomsFirst
+- HardMediumSoftScore roomStability
++ HardMediumSoftScore getRoomConflict()
++ void setRoomConflict(HardMediumSoftScore)
++ HardMediumSoftScore getDontGoInOvertime()
++ void setDontGoInOvertime(HardMediumSoftScore)
++ HardMediumSoftScore getRequiredAttendanceConflict()
++ void setRequiredAttendanceConflict(HardMediumSoftScore)
++ HardMediumSoftScore getRequiredRoomCapacity()
++ void setRequiredRoomCapacity(HardMediumSoftScore)
++ HardMediumSoftScore getStartAndEndOnSameDay()
++ void setStartAndEndOnSameDay(HardMediumSoftScore)
++ HardMediumSoftScore getRequiredAndPreferredAttendanceConflict()
++ void setRequiredAndPreferredAttendanceConflict(HardMediumSoftScore)
++ HardMediumSoftScore getPreferredAttendanceConflict()
++ void setPreferredAttendanceConflict(HardMediumSoftScore)
++ HardMediumSoftScore getDoAllMeetingsAsSoonAsPossible()
++ void setDoAllMeetingsAsSoonAsPossible(HardMediumSoftScore)
++ HardMediumSoftScore getOneTimeGrainBreakBetweenTwoConsecutiveMeetings()
++ void setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore)
++ HardMediumSoftScore getOverlappingMeetings()
++ void setOverlappingMeetings(HardMediumSoftScore)
++ HardMediumSoftScore getAssignLargerRoomsFirst()
++ void setAssignLargerRoomsFirst(HardMediumSoftScore)
++ HardMediumSoftScore getRoomStability()
++ void setRoomStability(HardMediumSoftScore)
+}
+class MeetingAssignment {
+- Meeting meeting
+- boolean pinned
+- TimeGrain startingTimeGrain
+- Room room
++ Meeting getMeeting()
++ void setMeeting(Meeting)
++ boolean isPinned()
++ void setPinned(boolean)
++ TimeGrain getStartingTimeGrain()
++ void setStartingTimeGrain(TimeGrain)
++ Room getRoom()
++ void setRoom(Room)
++ int calculateOverlap(MeetingAssignment)
++ Integer getLastTimeGrainIndex()
++ String getStartingDateTimeString()
++ int getRoomCapacity()
++ int getRequiredCapacity()
++ String getLabel()
++ String toString()
+}
+class Room {
+- String name
+- int capacity
++ String getName()
++ void setName(String)
++ int getCapacity()
++ void setCapacity(int)
++ String getLabel()
++ String toString()
+}
+class Day {
+- int dayOfYear
+- {static} DateTimeFormatter DAY_FORMATTER
++ int getDayOfYear()
++ void setDayOfYear(int)
++ String getDateString()
++ LocalDate toDate()
++ String getLabel()
++ String toString()
++ boolean equals(Object)
++ int hashCode()
++ int compareTo(Day)
+}
+class PreferredAttendance {
+}
+class Person {
+- String fullName
++ String getFullName()
++ void setFullName(String)
++ String getLabel()
++ String toString()
+}
+class RequiredAttendance {
+}
+abstract class Attendance {
+- Person person
+- Meeting meeting
++ Person getPerson()
++ void setPerson(Person)
++ Meeting getMeeting()
++ void setMeeting(Meeting)
++ String toString()
+}
+class TimeGrain {
+- {static} Comparator<TimeGrain> COMPARATOR
++ {static} int GRAIN_LENGTH_IN_MINUTES
+- int grainIndex
+- Day day
+- int startingMinuteOfDay
++ int getGrainIndex()
++ void setGrainIndex(int)
++ Day getDay()
++ void setDay(Day)
++ int getStartingMinuteOfDay()
++ void setStartingMinuteOfDay(int)
++ LocalDate getDate()
++ LocalTime getTime()
++ LocalDateTime getDateTime()
++ String getTimeString()
++ String getDateTimeString()
++ String getLabel()
++ String toString()
++ boolean equals(Object)
++ int hashCode()
++ int compareTo(TimeGrain)
+}
+class MeetingSchedule {
+- MeetingConstraintConfiguration constraintConfiguration
+- List<Meeting> meetingList
+- List<Day> dayList
+- List<TimeGrain> timeGrainList
+- List<Room> roomList
+- List<Person> personList
+- List<Attendance> attendanceList
+- List<MeetingAssignment> meetingAssignmentList
+- HardMediumSoftScore score
++ MeetingConstraintConfiguration getConstraintConfiguration()
++ void setConstraintConfiguration(MeetingConstraintConfiguration)
++ List<Meeting> getMeetingList()
++ void setMeetingList(List<Meeting>)
++ List<Day> getDayList()
++ void setDayList(List<Day>)
++ List<TimeGrain> getTimeGrainList()
++ void setTimeGrainList(List<TimeGrain>)
++ List<Room> getRoomList()
++ void setRoomList(List<Room>)
++ List<Person> getPersonList()
++ void setPersonList(List<Person>)
++ List<Attendance> getAttendanceList()
++ void setAttendanceList(List<Attendance>)
++ List<MeetingAssignment> getMeetingAssignmentList()
++ void setMeetingAssignmentList(List<MeetingAssignment>)
++ HardMediumSoftScore getScore()
++ void setScore(HardMediumSoftScore)
+}
+
+
+AbstractPersistable <|-- Meeting
+AbstractPersistable <|-- MeetingConstraintConfiguration
+AbstractPersistable <|-- MeetingAssignment
+Labeled <|.. Room
+AbstractPersistable <|-- Room
+Comparable <|.. Day
+Labeled <|.. Day
+AbstractPersistable <|-- Day
+Attendance <|-- PreferredAttendance
+Labeled <|.. Person
+AbstractPersistable <|-- Person
+Attendance <|-- RequiredAttendance
+AbstractPersistable <|-- Attendance
+Comparable <|.. TimeGrain
+Labeled <|.. TimeGrain
+AbstractPersistable <|-- TimeGrain
+AbstractPersistable <|-- MeetingSchedule
+@enduml
